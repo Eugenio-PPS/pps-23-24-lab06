@@ -44,12 +44,29 @@ enum List[A]:
     case Nil() => throw new IllegalStateException()
     case h :: t => t.foldLeft(h)(op)
 
+  def reversed: List[A] =
+    this.foldLeft(Nil())((acc, x) => x :: acc)
+
   // Exercise: implement the following methods
-  def zipWithValue[B](value: B): List[(A, B)] = ???
-  def length(): Int = ???
-  def zipWithIndex: List[(A, Int)] = ???
-  def partition(predicate: A => Boolean): (List[A], List[A]) = ???
-  def span(predicate: A => Boolean): (List[A], List[A]) = ???
+  def zipWithValue[B](value: B): List[(A, B)] =
+    this.map((_, value))
+  def length(): Int =
+    this.foldLeft(0)((acc, x) => acc + 1)
+  def zipWithIndex: List[(A, Int)] =
+    val l = length()
+    this.foldRight(Nil())((x, acc) => acc match
+      case (h, i: Int) :: t => (x, i - 1) :: acc
+      case _                => (x, l - 1) :: acc
+    )
+  def partition(predicate: A => Boolean): (List[A], List[A]) =
+    this.foldRight((Nil(), Nil()))((x, acc) => acc match
+      case (l, r) => if predicate(x) then (x :: l, r) else (l, x :: r))
+  def span(predicate: A => Boolean): (List[A], List[A]) =
+    this.foldLeft(((Nil[A](), Nil[A]()), true))((acc, x) => acc match
+      case ((l, r), status) if !status || !predicate(x) => ((l, x :: r), false)
+      case ((l, r), status) => ((x :: l, r), true)
+    ) match
+      case ((a,b), fuse) => (a.reversed, b.reversed)
   def takeRight(n: Int): List[A] = ???
   def collect(predicate: PartialFunction[A, A]): List[A] = ???
 // Factories
