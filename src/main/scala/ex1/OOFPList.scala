@@ -67,8 +67,13 @@ enum List[A]:
       case ((l, r), status) => ((x :: l, r), true)
     ) match
       case ((a,b), fuse) => (a.reversed, b.reversed)
-  def takeRight(n: Int): List[A] = ???
-  def collect(predicate: PartialFunction[A, A]): List[A] = ???
+  def takeRight(n: Int): List[A] =
+    this.foldRight((Nil[A](), 0))((x, acc) => acc match
+      case(l, taken) if taken < n  => (x :: l, taken + 1)
+      case _                       => acc
+    )._1
+  def collect(predicate: PartialFunction[A, A]): List[A] =
+    this.foldRight(Nil())((x, acc) => if predicate.isDefinedAt(x) then predicate(x) :: acc else acc)
 // Factories
 object List:
 
