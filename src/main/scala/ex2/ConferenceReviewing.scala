@@ -1,0 +1,3 @@
+package ex2
+
+class ConferenceReviewingImpl extends ConferenceReviewing
