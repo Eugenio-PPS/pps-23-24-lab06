@@ -38,7 +38,7 @@ public class TestScalaImplementation {
 	// questo metodo istanzia ConferenceReviewing e gli carica delle revisioni
 	@BeforeEach
 	public void init() {
-		this.cr = null;
+		this.cr = new ConferenceReviewingJavaFacade();
 		// carico una revisione per l'articolo 1:
 		// - 8 per relevance, significance e final
 		// - 7 per confidence
